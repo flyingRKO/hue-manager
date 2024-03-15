@@ -1,6 +1,8 @@
 package com.rko.huemanager.controller;
 
+import com.rko.huemanager.dto.request.LoginRequest;
 import com.rko.huemanager.dto.request.SignUpRequest;
+import com.rko.huemanager.dto.response.LoginResponse;
 import com.rko.huemanager.dto.response.Response;
 import com.rko.huemanager.dto.response.SignUpResponse;
 import com.rko.huemanager.service.EmployeeService;
@@ -19,5 +21,11 @@ public class EmployeeController {
     @PostMapping("/signup")
     public Response<SignUpResponse> signUp(@RequestBody SignUpRequest request) {
         return Response.success(employeeService.signUp(request));
+    }
+
+    @PostMapping("/login")
+    public Response<LoginResponse> login(@RequestBody LoginRequest request) {
+        String token = employeeService.login(request.email(), request.password());
+        return Response.success(new LoginResponse(token));
     }
 }

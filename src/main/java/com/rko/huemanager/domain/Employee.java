@@ -3,15 +3,20 @@ package com.rko.huemanager.domain;
 import com.rko.huemanager.domain.constant.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class Employee {
+public class Employee implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -73,4 +78,33 @@ public class Employee {
         return new Employee(email, password, name, phoneNumber, role, position, department);
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.toString()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return removedAt == null;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return removedAt == null;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return removedAt == null;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return removedAt == null;
+    }
 }
