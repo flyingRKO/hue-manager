@@ -2,6 +2,7 @@ package com.rko.huemanager.service;
 
 import com.rko.huemanager.config.jwt.JwtTokenUtils;
 import com.rko.huemanager.domain.Employee;
+import com.rko.huemanager.dto.request.EmployeeInfoRequest;
 import com.rko.huemanager.dto.request.SignUpRequest;
 import com.rko.huemanager.dto.response.SignUpResponse;
 import com.rko.huemanager.exception.ErrorCode;
@@ -56,6 +57,16 @@ public class EmployeeService implements UserDetailsService {
             throw new HueManagerException(ErrorCode.INVALID_PASSWORD);
         }
         return JwtTokenUtils.generateAccessToken(email, secretKey, expiredTimeMs);
+    }
+
+    @Transactional
+    public void updateEmployeeInfo(Long employeeId, EmployeeInfoRequest request) {
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new HueManagerException(ErrorCode.EMPLOYEE_NOT_FOUND, String.format("employeeId is %s", employeeId)));
+        if (request.name() != null){employee.setName(request.name());}
+        if (request.phoneNumber() != null){employee.setPhoneNumber(request.phoneNumber());}
+        if (request.position() != null){employee.setPosition(request.position());}
+        if (request.department() != null){employee.setDepartment(request.department());}
+        employeeRepository.save(employee); // 변경 감지로 인해 사실 필요없지만 코드 가독성을 위해
     }
 
 

@@ -22,15 +22,19 @@ public class Employee implements UserDetails {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @Setter
     private String email;
 
     @Column(nullable = false)
+    @Setter
     private String password;
 
     @Column(nullable = false)
+    @Setter
     private String name;
 
     @Column(nullable = false)
+    @Setter
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
@@ -41,8 +45,10 @@ public class Employee implements UserDetails {
     private Integer vacationCount = 15;
 
     @Column(nullable = false)
+    @Setter
     private String position;
     @Column(nullable = false)
+    @Setter
     private String department;
 
     @Column(name = "registered_at")
