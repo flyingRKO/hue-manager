@@ -30,7 +30,8 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeRequests()
                 .requestMatchers(
-                        "/api/employee/**"
+                        "/api/employee/signup",
+                        "/api/employee/login"
                 )
                 .permitAll()
                 .anyRequest().authenticated()

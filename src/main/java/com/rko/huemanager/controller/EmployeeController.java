@@ -1,17 +1,14 @@
 package com.rko.huemanager.controller;
 
-import com.rko.huemanager.dto.request.LoginRequest;
-import com.rko.huemanager.dto.request.SignUpRequest;
+import com.rko.huemanager.domain.Employee;
+import com.rko.huemanager.dto.request.*;
 import com.rko.huemanager.dto.response.LoginResponse;
 import com.rko.huemanager.dto.response.Response;
 import com.rko.huemanager.dto.response.SignUpResponse;
 import com.rko.huemanager.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/employee")
@@ -29,4 +26,23 @@ public class EmployeeController {
         String token = employeeService.login(request.email(), request.password());
         return Response.success(new LoginResponse(token));
     }
+
+    @PutMapping("{employeeId}/info")
+    public Response<Void> updateEmployeeInfo(@PathVariable Long employeeId, @Valid @RequestBody EmployeeInfoRequest request){
+        employeeService.updateEmployeeInfo(employeeId, request);
+        return Response.success();
+    }
+
+    @PutMapping("{employeeId}/email")
+    public Response<Void> updateEmail(@PathVariable Long employeeId, @Valid @RequestBody EmailUpdateRequest request){
+        employeeService.updateEmail(employeeId, request);
+        return Response.success();
+    }
+
+    @PutMapping("{employeeId}/password")
+    public Response<Void> updatePassword(@PathVariable Long employeeId, @Valid @RequestBody PasswordUpdateRequest request){
+        employeeService.updatePassword(employeeId, request);
+        return Response.success();
+    }
+
 }

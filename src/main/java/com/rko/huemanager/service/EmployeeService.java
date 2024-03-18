@@ -2,6 +2,9 @@ package com.rko.huemanager.service;
 
 import com.rko.huemanager.config.jwt.JwtTokenUtils;
 import com.rko.huemanager.domain.Employee;
+import com.rko.huemanager.dto.request.EmailUpdateRequest;
+import com.rko.huemanager.dto.request.EmployeeInfoRequest;
+import com.rko.huemanager.dto.request.PasswordUpdateRequest;
 import com.rko.huemanager.dto.request.SignUpRequest;
 import com.rko.huemanager.dto.response.SignUpResponse;
 import com.rko.huemanager.exception.ErrorCode;
@@ -57,6 +60,51 @@ public class EmployeeService implements UserDetailsService {
         }
         return JwtTokenUtils.generateAccessToken(email, secretKey, expiredTimeMs);
     }
+
+    @Transactional
+    public void updateEmployeeInfo(Long employeeId, EmployeeInfoRequest request) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new HueManagerException(ErrorCode.EMPLOYEE_NOT_FOUND, String.format("employeeId is %s", employeeId)));
+
+        if (request.name() != null){employee.setName(request.name());}
+        if (request.phoneNumber() != null){employee.setPhoneNumber(request.phoneNumber());}
+        if (request.position() != null){employee.setPosition(request.position());}
+        if (request.department() != null){employee.setDepartment(request.department());}
+
+    }
+
+    @Transactional
+    public void updateEmail(Long employeeId, EmailUpdateRequest request){
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new HueManagerException(ErrorCode.EMPLOYEE_NOT_FOUND, String.format("employeeId is %s", employeeId)));
+
+        if (!request.email().equals(employee.getEmail())) {
+            employeeRepository.findByEmail(request.email()).ifPresent(existingEmployee -> {
+                if (!existingEmployee.getId().equals(employee.getId())) {
+                    throw new HueManagerException(ErrorCode.DUPLICATED_EMAIL, String.format("email is %s", request.email()));
+                }
+            });
+            employee.setEmail(request.email());
+
+        }
+    }
+
+    @Transactional
+    public void updatePassword(Long employeeId, PasswordUpdateRequest request){
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new HueManagerException(ErrorCode.EMPLOYEE_NOT_FOUND, String.format("employeeId is %s", employeeId)));
+
+        if (!encoder.matches(request.currentPassword(), employee.getPassword())){
+            throw new HueManagerException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        if(request.newPassword().equals(request.currentPassword())){
+            throw new HueManagerException(ErrorCode.PASSWORD_SAME_OLD);
+        }
+
+        employee.setPassword(encoder.encode(request.newPassword()));
+    }
+
 
 
 }
