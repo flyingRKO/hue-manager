@@ -2,6 +2,7 @@ package com.rko.huemanager.service;
 
 import com.rko.huemanager.config.jwt.JwtTokenUtils;
 import com.rko.huemanager.domain.Employee;
+import com.rko.huemanager.dto.request.EmailUpdateRequest;
 import com.rko.huemanager.dto.request.EmployeeInfoRequest;
 import com.rko.huemanager.dto.request.SignUpRequest;
 import com.rko.huemanager.dto.response.SignUpResponse;
@@ -67,6 +68,22 @@ public class EmployeeService implements UserDetailsService {
         if (request.position() != null){employee.setPosition(request.position());}
         if (request.department() != null){employee.setDepartment(request.department());}
         employeeRepository.save(employee); // 변경 감지로 인해 사실 필요없지만 코드 가독성을 위해
+    }
+
+    @Transactional
+    public void updateEmail(Long employeeId, EmailUpdateRequest request){
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new HueManagerException(ErrorCode.EMPLOYEE_NOT_FOUND, String.format("employeeId is %s", employeeId)));
+
+        if (!request.email().equals(employee.getEmail())) {
+            employeeRepository.findByEmail(request.email()).ifPresent(existingEmployee -> {
+                if (!existingEmployee.getId().equals(employee.getId())) {
+                    throw new HueManagerException(ErrorCode.DUPLICATED_EMAIL, String.format("email is %s", request.email()));
+                }
+            });
+            employee.setEmail(request.email());
+            employeeRepository.save(employee);
+        }
     }
 
 
