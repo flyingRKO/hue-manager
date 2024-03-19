@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record SaveScheduleRequest(
+public record ScheduleRequest(
         @NotNull
         LocalDate startDate,
 
@@ -14,4 +14,7 @@ public record SaveScheduleRequest(
         @NotNull
         ScheduleType type
 ) {
+        public static ScheduleRequest of(LocalDate startDate, LocalDate endDate, ScheduleType type){
+                return new ScheduleRequest(startDate, endDate, type);
+        }
 }

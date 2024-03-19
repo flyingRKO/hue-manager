@@ -14,7 +14,10 @@ public enum ErrorCode {
     NOT_ENOUGH_DAYS(HttpStatus.BAD_REQUEST, "연차가 부족합니다."),
     INVALID_NIGHT_SHIFT_REQUEST(HttpStatus.BAD_REQUEST, "당직은 하루만 선택 가능합니다"),
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB 에러가 발생했습니다."),
-    EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "사원을 찾을 수 없습니다.");
+    EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "사원을 찾을 수 없습니다."),
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다." ),
+    UNAUTHORIZED_SCHEDULE_UPDATE(HttpStatus.CONFLICT, "일정 변경은 당사자만 가능합니다."),
+    SCHEDULE_NOT_PENDING(HttpStatus.CONFLICT, "일정 변경은 상태가 보류 중일 때 가능합니다.");
 
     private final HttpStatus status;
     private final String message;
