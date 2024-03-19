@@ -43,6 +43,15 @@ public class ScheduleService {
         schedule.setType(request.type());
     }
 
+    @Transactional
+    public void deleteSchedule(Long employeeId, Long scheduleId){
+        Employee employee = findEmployeeById(employeeId);
+        Schedule schedule = findScheduleById(scheduleId);
+
+        validateScheduleAuthorized(schedule, employee);
+        scheduleRepository.delete(schedule);
+    }
+
     private Employee findEmployeeById(Long employeeId) {
         return employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new HueManagerException(ErrorCode.EMPLOYEE_NOT_FOUND, String.format("employeeId is %s", employeeId)));
@@ -69,12 +78,16 @@ public class ScheduleService {
 
 
     private void validateScheduleForUpdate(Schedule schedule, ScheduleRequest request, Employee employee) {
+        validateScheduleAuthorized(schedule, employee);
+        validateScheduleRequest(ScheduleRequest.of(request.startDate(), request.endDate(), request.type()), employee);
+    }
+
+    private void validateScheduleAuthorized(Schedule schedule, Employee employee){
         if (!schedule.getStatus().equals(ScheduleStatus.PENDING)) {
             throw new HueManagerException(ErrorCode.SCHEDULE_NOT_PENDING);
         }
         if (!schedule.getEmployee().getId().equals(employee.getId())){
-            throw new HueManagerException(ErrorCode.UNAUTHORIZED_SCHEDULE_UPDATE);
+            throw new HueManagerException(ErrorCode.UNAUTHORIZED_SCHEDULE);
         }
-        validateScheduleRequest(ScheduleRequest.of(request.startDate(), request.endDate(), request.type()), employee);
     }
 }

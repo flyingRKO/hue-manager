@@ -26,4 +26,10 @@ public class ScheduleController {
         scheduleService.updateSchedule(employee.getId(), scheduleId, request);
         return Response.success();
     }
+
+    @DeleteMapping("/{scheduleId}")
+    public Response<Void> deleteSchedule(@AuthenticationPrincipal Employee employee, @PathVariable Long scheduleId){
+        scheduleService.deleteSchedule(employee.getId(), scheduleId);
+        return Response.success();
+    }
 }

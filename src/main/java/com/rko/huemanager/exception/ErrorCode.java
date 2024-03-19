@@ -16,7 +16,7 @@ public enum ErrorCode {
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB 에러가 발생했습니다."),
     EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "사원을 찾을 수 없습니다."),
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다." ),
-    UNAUTHORIZED_SCHEDULE_UPDATE(HttpStatus.CONFLICT, "일정 변경은 당사자만 가능합니다."),
+    UNAUTHORIZED_SCHEDULE(HttpStatus.CONFLICT, "일정 수정/삭제는 당사자만 가능합니다."),
     SCHEDULE_NOT_PENDING(HttpStatus.CONFLICT, "일정 변경은 상태가 보류 중일 때 가능합니다.");
 
     private final HttpStatus status;
