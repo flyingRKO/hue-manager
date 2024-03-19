@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
@@ -34,6 +36,22 @@ public class Schedule {
     @Column(nullable = false)
     @Setter
     private ScheduleStatus status;
+
+    @Column(name = "registered_at")
+    private Timestamp registeredAt;
+
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
+
+    @PrePersist
+    void registeredAt() {
+        this.registeredAt = Timestamp.from(Instant.now());
+    }
+
+    @PreUpdate
+    void updatedAt() {
+        this.updatedAt = Timestamp.from(Instant.now());
+    }
 
     private Schedule(Employee employee, LocalDate startDate, LocalDate endDate, ScheduleType type, ScheduleStatus status) {
         this.employee = employee;
