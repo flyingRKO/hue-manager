@@ -1,11 +1,17 @@
 package com.rko.huemanager.controller;
 
 import com.rko.huemanager.domain.Employee;
+import com.rko.huemanager.domain.Schedule;
+import com.rko.huemanager.dto.ScheduleDto;
 import com.rko.huemanager.dto.request.ScheduleRequest;
 import com.rko.huemanager.dto.response.Response;
 import com.rko.huemanager.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +25,12 @@ public class ScheduleController {
     public Response<Void> saveSchedule(@AuthenticationPrincipal Employee employee, @RequestBody @Valid ScheduleRequest request){
         scheduleService.saveSchedule(employee.getId(), request);
         return Response.success();
+    }
+
+    @GetMapping("/my")
+    public Response<Page<ScheduleDto>> getMySchedules(@AuthenticationPrincipal Employee employee,
+                                                      @PageableDefault(size = 10, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable){
+        return Response.success(scheduleService.getEmployeeSchedules(employee.getId(), pageable));
     }
 
     @PutMapping("/{scheduleId}/update")

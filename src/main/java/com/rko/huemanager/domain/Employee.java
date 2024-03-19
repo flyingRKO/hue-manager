@@ -1,5 +1,6 @@
 package com.rko.huemanager.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rko.huemanager.domain.constant.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -85,31 +86,37 @@ public class Employee implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.toString()));
     }
 
     @Override
+    @JsonIgnore
     public String getUsername() {
         return email;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return removedAt == null;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return removedAt == null;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return removedAt == null;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return removedAt == null;
     }

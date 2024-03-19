@@ -4,12 +4,15 @@ import com.rko.huemanager.domain.Employee;
 import com.rko.huemanager.domain.Schedule;
 import com.rko.huemanager.domain.constant.ScheduleStatus;
 import com.rko.huemanager.domain.constant.ScheduleType;
+import com.rko.huemanager.dto.ScheduleDto;
 import com.rko.huemanager.dto.request.ScheduleRequest;
 import com.rko.huemanager.exception.ErrorCode;
 import com.rko.huemanager.exception.HueManagerException;
 import com.rko.huemanager.repository.EmployeeRepository;
 import com.rko.huemanager.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,12 @@ public class ScheduleService {
         LocalDate endDate = (request.type() == ScheduleType.NIGHT_SHIFT) ? request.startDate() : request.endDate();
         Schedule schedule = Schedule.of(employee, request.startDate(), endDate, request.type(), ScheduleStatus.PENDING);
         scheduleRepository.save(schedule);
+    }
+
+    @Transactional
+    public Page<ScheduleDto> getEmployeeSchedules(Long employeeId, Pageable pageable){
+        Page<Schedule> schedules = scheduleRepository.findByEmployeeId(employeeId, pageable);
+        return schedules.map(ScheduleDto::from);
     }
 
     @Transactional
