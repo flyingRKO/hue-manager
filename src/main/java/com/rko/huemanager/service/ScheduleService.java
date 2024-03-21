@@ -16,8 +16,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+
+import static java.time.temporal.TemporalAdjusters.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,14 +37,36 @@ public class ScheduleService {
         scheduleRepository.save(schedule);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<ScheduleDto> getAllSchedules(Pageable pageable) {
         return scheduleRepository.findAll(pageable).map(ScheduleDto::from);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<ScheduleDto> getEmployeeSchedules(Long employeeId, Pageable pageable){
         Page<Schedule> schedules = scheduleRepository.findByEmployeeId(employeeId, pageable);
+        return schedules.map(ScheduleDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ScheduleDto> getDaySchedules(LocalDate date, Pageable pageable){
+        Page<Schedule> schedules = scheduleRepository.findByStartDateBetween(date, date, pageable);
+        return schedules.map(ScheduleDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ScheduleDto> getWeekSchedules(LocalDate date, Pageable pageable){
+        LocalDate startDate = date.with(previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endDate = date.with(nextOrSame(DayOfWeek.SUNDAY));
+        Page<Schedule> schedules = scheduleRepository.findByStartDateBetween(startDate, endDate, pageable);
+        return schedules.map(ScheduleDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ScheduleDto> getMonthSchedules(LocalDate date, Pageable pageable){
+        LocalDate startDate = date.with(firstDayOfMonth());
+        LocalDate endDate = date.with(lastDayOfMonth());
+        Page<Schedule> schedules = scheduleRepository.findByStartDateBetween(startDate, endDate, pageable);
         return schedules.map(ScheduleDto::from);
     }
 

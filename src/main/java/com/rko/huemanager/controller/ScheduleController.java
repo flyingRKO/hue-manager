@@ -12,8 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/schedule")
@@ -36,6 +39,24 @@ public class ScheduleController {
     public Response<Page<ScheduleDto>> getMySchedules(@AuthenticationPrincipal Employee employee,
                                                       @PageableDefault(size = 10, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
         return Response.success(scheduleService.getEmployeeSchedules(employee.getId(), pageable));
+    }
+
+    @GetMapping("/day")
+    public Response<Page<ScheduleDto>> getDaySchedules(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                                       @PageableDefault(size = 10, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return Response.success(scheduleService.getDaySchedules(date, pageable));
+    }
+
+    @GetMapping("/week")
+    public Response<Page<ScheduleDto>> getWeekSchedules(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                                        @PageableDefault(size = 10, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return Response.success(scheduleService.getWeekSchedules(date, pageable));
+    }
+
+    @GetMapping("/month")
+    public Response<Page<ScheduleDto>> getMonthSchedules(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                                         @PageableDefault(size = 10, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return Response.success(scheduleService.getMonthSchedules(date, pageable));
     }
 
     @PutMapping("/{scheduleId}/update")
