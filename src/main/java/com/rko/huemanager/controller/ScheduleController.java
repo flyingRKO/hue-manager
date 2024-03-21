@@ -4,6 +4,7 @@ import com.rko.huemanager.domain.Employee;
 import com.rko.huemanager.domain.Schedule;
 import com.rko.huemanager.dto.ScheduleDto;
 import com.rko.huemanager.dto.request.ScheduleRequest;
+import com.rko.huemanager.dto.request.ScheduleSearchRequest;
 import com.rko.huemanager.dto.response.Response;
 import com.rko.huemanager.service.ScheduleService;
 import jakarta.validation.Valid;
@@ -57,6 +58,12 @@ public class ScheduleController {
     public Response<Page<ScheduleDto>> getMonthSchedules(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                                          @PageableDefault(size = 10, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
         return Response.success(scheduleService.getMonthSchedules(date, pageable));
+    }
+
+    @PostMapping("/search")
+    public Response<Page<ScheduleDto>> searchSchedules(@RequestBody ScheduleSearchRequest request,
+                                                       @PageableDefault(size = 20, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return Response.success(scheduleService.searchSchedules(request, pageable));
     }
 
     @PutMapping("/{scheduleId}/update")

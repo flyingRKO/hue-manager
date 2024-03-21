@@ -6,6 +6,7 @@ import com.rko.huemanager.domain.constant.ScheduleStatus;
 import com.rko.huemanager.domain.constant.ScheduleType;
 import com.rko.huemanager.dto.ScheduleDto;
 import com.rko.huemanager.dto.request.ScheduleRequest;
+import com.rko.huemanager.dto.request.ScheduleSearchRequest;
 import com.rko.huemanager.exception.ErrorCode;
 import com.rko.huemanager.exception.HueManagerException;
 import com.rko.huemanager.repository.EmployeeRepository;
@@ -67,6 +68,18 @@ public class ScheduleService {
         LocalDate startDate = date.with(firstDayOfMonth());
         LocalDate endDate = date.with(lastDayOfMonth());
         Page<Schedule> schedules = scheduleRepository.findByStartDateBetween(startDate, endDate, pageable);
+        return schedules.map(ScheduleDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ScheduleDto> searchSchedules(ScheduleSearchRequest request, Pageable pageable){
+        Page<Schedule> schedules = scheduleRepository.findSearchSchedules(
+                request.startDate(),
+                request.endDate(),
+                request.type(),
+                request.status(),
+                pageable);
+
         return schedules.map(ScheduleDto::from);
     }
 
