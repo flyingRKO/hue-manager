@@ -27,9 +27,14 @@ public class ScheduleController {
         return Response.success();
     }
 
+    @GetMapping("/all")
+    public Response<Page<ScheduleDto>> getAllSchedules(@PageableDefault(size = 20, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return Response.success(scheduleService.getAllSchedules(pageable));
+    }
+
     @GetMapping("/my")
     public Response<Page<ScheduleDto>> getMySchedules(@AuthenticationPrincipal Employee employee,
-                                                      @PageableDefault(size = 10, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable){
+                                                      @PageableDefault(size = 10, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
         return Response.success(scheduleService.getEmployeeSchedules(employee.getId(), pageable));
     }
 

@@ -35,6 +35,11 @@ public class ScheduleService {
     }
 
     @Transactional
+    public Page<ScheduleDto> getAllSchedules(Pageable pageable) {
+        return scheduleRepository.findAll(pageable).map(ScheduleDto::from);
+    }
+
+    @Transactional
     public Page<ScheduleDto> getEmployeeSchedules(Long employeeId, Pageable pageable){
         Page<Schedule> schedules = scheduleRepository.findByEmployeeId(employeeId, pageable);
         return schedules.map(ScheduleDto::from);
