@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 import static java.time.temporal.TemporalAdjusters.*;
@@ -33,7 +34,18 @@ public class ScheduleService {
     public void saveSchedule(Long employeeId, ScheduleRequest request) {
         Employee employee = findEmployeeById(employeeId);
         validateScheduleRequest(request, employee);
-        LocalDate endDate = (request.type() == ScheduleType.NIGHT_SHIFT) ? request.startDate() : request.endDate();
+
+        LocalDate startDate = request.startDate();
+        LocalDate endDate = (request.type() == ScheduleType.NIGHT_SHIFT) ? startDate : request.endDate();
+
+        int dayOff = Period.between(startDate, endDate).getDays() + 1;
+
+        if (request.type() == ScheduleType.LEAVE){
+            if (employee.getVacationCount() < dayOff){
+                throw new HueManagerException(ErrorCode.NOT_ENOUGH_DAYS);
+            }
+            employee.setVacationCount(employee.getVacationCount() - dayOff);
+        }
         Schedule schedule = Schedule.of(employee, request.startDate(), endDate, request.type(), ScheduleStatus.PENDING);
         scheduleRepository.save(schedule);
     }
