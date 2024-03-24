@@ -8,6 +8,7 @@ import com.rko.huemanager.dto.response.SignUpResponse;
 import com.rko.huemanager.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,21 +28,21 @@ public class EmployeeController {
         return Response.success(new LoginResponse(token));
     }
 
-    @PutMapping("{employeeId}/info")
-    public Response<Void> updateEmployeeInfo(@PathVariable Long employeeId, @Valid @RequestBody EmployeeInfoRequest request){
-        employeeService.updateEmployeeInfo(employeeId, request);
+    @PutMapping("/info")
+    public Response<Void> updateEmployeeInfo(@AuthenticationPrincipal Employee employee, @Valid @RequestBody EmployeeInfoRequest request){
+        employeeService.updateEmployeeInfo(employee.getId(), request);
         return Response.success();
     }
 
-    @PutMapping("{employeeId}/email")
-    public Response<Void> updateEmail(@PathVariable Long employeeId, @Valid @RequestBody EmailUpdateRequest request){
-        employeeService.updateEmail(employeeId, request);
+    @PutMapping("/email")
+    public Response<Void> updateEmail(@AuthenticationPrincipal Employee employee, @Valid @RequestBody EmailUpdateRequest request){
+        employeeService.updateEmail(employee.getId(), request);
         return Response.success();
     }
 
-    @PutMapping("{employeeId}/password")
-    public Response<Void> updatePassword(@PathVariable Long employeeId, @Valid @RequestBody PasswordUpdateRequest request){
-        employeeService.updatePassword(employeeId, request);
+    @PutMapping("/password")
+    public Response<Void> updatePassword(@AuthenticationPrincipal Employee employee, @Valid @RequestBody PasswordUpdateRequest request){
+        employeeService.updatePassword(employee.getId(), request);
         return Response.success();
     }
 
