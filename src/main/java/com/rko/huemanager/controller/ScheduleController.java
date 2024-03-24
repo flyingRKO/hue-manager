@@ -31,8 +31,8 @@ public class ScheduleController {
     }
 
     @GetMapping("/all")
-    public Response<Page<ScheduleDto>> getAllSchedules(@PageableDefault(size = 20, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
-        return Response.success(scheduleService.getAllSchedules(pageable));
+    public Response<Page<ScheduleDto>> getAllApprovedSchedules(@PageableDefault(size = 20, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return Response.success(scheduleService.getAllApprovedSchedules(pageable));
     }
 
     @GetMapping("/my")
@@ -59,11 +59,6 @@ public class ScheduleController {
         return Response.success(scheduleService.getMonthSchedules(date, pageable));
     }
 
-    @PostMapping("/search")
-    public Response<Page<ScheduleDto>> searchSchedules(@RequestBody ScheduleSearchRequest request,
-                                                       @PageableDefault(size = 20, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable){
-        return Response.success(scheduleService.searchSchedules(request, pageable));
-    }
 
     @PutMapping("/{scheduleId}/update")
     public Response<Void> updateSchedule(@AuthenticationPrincipal Employee employee, @PathVariable Long scheduleId, @RequestBody @Valid ScheduleRequest request){

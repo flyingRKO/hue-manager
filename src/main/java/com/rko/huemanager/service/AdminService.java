@@ -4,10 +4,14 @@ import com.rko.huemanager.domain.Employee;
 import com.rko.huemanager.domain.Schedule;
 import com.rko.huemanager.domain.constant.ScheduleStatus;
 import com.rko.huemanager.domain.constant.ScheduleType;
+import com.rko.huemanager.dto.ScheduleDto;
+import com.rko.huemanager.dto.request.ScheduleSearchRequest;
 import com.rko.huemanager.exception.ErrorCode;
 import com.rko.huemanager.exception.HueManagerException;
 import com.rko.huemanager.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +22,17 @@ import java.time.Period;
 public class AdminService {
     private final ScheduleRepository scheduleRepository;
 
+    @Transactional(readOnly = true)
+    public Page<ScheduleDto> searchSchedules(ScheduleSearchRequest request, Pageable pageable){
+        Page<Schedule> schedules = scheduleRepository.findSearchSchedules(
+                request.startDate(),
+                request.endDate(),
+                request.type(),
+                request.status(),
+                pageable);
+
+        return schedules.map(ScheduleDto::from);
+    }
     @Transactional
     public void updateScheduleStatus(Long scheduleId, ScheduleStatus newStatus){
         Schedule schedule = findScheduleById(scheduleId);
