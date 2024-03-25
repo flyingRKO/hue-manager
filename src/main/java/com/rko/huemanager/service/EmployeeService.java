@@ -1,5 +1,6 @@
 package com.rko.huemanager.service;
 
+import com.rko.huemanager.aop.Loggable;
 import com.rko.huemanager.config.jwt.JwtTokenUtils;
 import com.rko.huemanager.domain.Employee;
 import com.rko.huemanager.dto.request.EmailUpdateRequest;
@@ -53,6 +54,7 @@ public class EmployeeService implements UserDetailsService {
         return employeeRepository.findByEmail(email).orElseThrow(() -> new HueManagerException(ErrorCode.EMPLOYEE_NOT_FOUND, String.format("email is %s", email)));
     }
 
+    @Loggable
     public String login(String email, String password){
         UserDetails savedEmployee = loadUserByUsername(email);
         if (!encoder.matches(password, savedEmployee.getPassword())) {
