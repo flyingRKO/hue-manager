@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 import static java.time.temporal.TemporalAdjusters.*;
@@ -33,14 +34,25 @@ public class ScheduleService {
     public void saveSchedule(Long employeeId, ScheduleRequest request) {
         Employee employee = findEmployeeById(employeeId);
         validateScheduleRequest(request, employee);
-        LocalDate endDate = (request.type() == ScheduleType.NIGHT_SHIFT) ? request.startDate() : request.endDate();
+
+        LocalDate startDate = request.startDate();
+        LocalDate endDate = (request.type() == ScheduleType.NIGHT_SHIFT) ? startDate : request.endDate();
+
+        int dayOff = Period.between(startDate, endDate).getDays() + 1;
+
+        if (request.type() == ScheduleType.LEAVE){
+            if (employee.getVacationCount() < dayOff){
+                throw new HueManagerException(ErrorCode.NOT_ENOUGH_DAYS);
+            }
+            employee.setVacationCount(employee.getVacationCount() - dayOff);
+        }
         Schedule schedule = Schedule.of(employee, request.startDate(), endDate, request.type(), ScheduleStatus.PENDING);
         scheduleRepository.save(schedule);
     }
 
     @Transactional(readOnly = true)
-    public Page<ScheduleDto> getAllSchedules(Pageable pageable) {
-        return scheduleRepository.findAll(pageable).map(ScheduleDto::from);
+    public Page<ScheduleDto> getAllApprovedSchedules(Pageable pageable) {
+        return scheduleRepository.findByStatus(ScheduleStatus.APPROVED, pageable).map(ScheduleDto::from);
     }
 
     @Transactional(readOnly = true)
@@ -51,7 +63,7 @@ public class ScheduleService {
 
     @Transactional(readOnly = true)
     public Page<ScheduleDto> getDaySchedules(LocalDate date, Pageable pageable){
-        Page<Schedule> schedules = scheduleRepository.findByStartDateBetween(date, date, pageable);
+        Page<Schedule> schedules = scheduleRepository.findByStartDateBetweenAndStatus(date, date, ScheduleStatus.APPROVED, pageable);
         return schedules.map(ScheduleDto::from);
     }
 
@@ -59,7 +71,7 @@ public class ScheduleService {
     public Page<ScheduleDto> getWeekSchedules(LocalDate date, Pageable pageable){
         LocalDate startDate = date.with(previousOrSame(DayOfWeek.MONDAY));
         LocalDate endDate = date.with(nextOrSame(DayOfWeek.SUNDAY));
-        Page<Schedule> schedules = scheduleRepository.findByStartDateBetween(startDate, endDate, pageable);
+        Page<Schedule> schedules = scheduleRepository.findByStartDateBetweenAndStatus(startDate, endDate, ScheduleStatus.APPROVED, pageable);
         return schedules.map(ScheduleDto::from);
     }
 
@@ -67,19 +79,7 @@ public class ScheduleService {
     public Page<ScheduleDto> getMonthSchedules(LocalDate date, Pageable pageable){
         LocalDate startDate = date.with(firstDayOfMonth());
         LocalDate endDate = date.with(lastDayOfMonth());
-        Page<Schedule> schedules = scheduleRepository.findByStartDateBetween(startDate, endDate, pageable);
-        return schedules.map(ScheduleDto::from);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ScheduleDto> searchSchedules(ScheduleSearchRequest request, Pageable pageable){
-        Page<Schedule> schedules = scheduleRepository.findSearchSchedules(
-                request.startDate(),
-                request.endDate(),
-                request.type(),
-                request.status(),
-                pageable);
-
+        Page<Schedule> schedules = scheduleRepository.findByStartDateBetweenAndStatus(startDate, endDate, ScheduleStatus.APPROVED, pageable);
         return schedules.map(ScheduleDto::from);
     }
 

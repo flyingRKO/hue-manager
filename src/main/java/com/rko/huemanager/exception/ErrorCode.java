@@ -15,6 +15,8 @@ public enum ErrorCode {
     INVALID_NIGHT_SHIFT_REQUEST(HttpStatus.BAD_REQUEST, "당직은 하루만 선택 가능합니다"),
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB 에러가 발생했습니다."),
     EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "사원을 찾을 수 없습니다."),
+    NOT_AN_EMPLOYEE(HttpStatus.FORBIDDEN, "직원이 아닙니다."),
+    NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "관리자 권한이 없습니다."),
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다." ),
     UNAUTHORIZED_SCHEDULE(HttpStatus.CONFLICT, "일정 수정/삭제는 당사자만 가능합니다."),
     SCHEDULE_NOT_PENDING(HttpStatus.CONFLICT, "일정 변경은 상태가 보류 중일 때 가능합니다.");
