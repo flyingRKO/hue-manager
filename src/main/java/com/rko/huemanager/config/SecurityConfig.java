@@ -30,6 +30,12 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeRequests()
                 .requestMatchers(
+                        "/",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/api-docs/**",
+                        "/swagger-resources/**",
+                        "/webjars/**",
                         "/api/employee/signup",
                         "/api/employee/login"
                 )

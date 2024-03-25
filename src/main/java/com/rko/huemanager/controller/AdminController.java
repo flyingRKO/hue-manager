@@ -14,7 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("api/admin")
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminService adminService;
