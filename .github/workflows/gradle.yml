@@ -77,4 +77,4 @@ jobs:
             fi
             
             sudo docker pull ${{ env.DOCKER_IMAGE_NAME }}:latest
-            sudo docker run -d --name hue-container -p 8080:80 -e TZ=Asia/Seoul ${{ env.DOCKER_IMAGE_NAME }}:latest
+            sudo docker run -d --name hue-container -p 80:8080 -e TZ=Asia/Seoul ${{ env.DOCKER_IMAGE_NAME }}:latest
