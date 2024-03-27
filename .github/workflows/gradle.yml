@@ -48,8 +48,8 @@ jobs:
       with:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: "your-application-name"
-        environment_name: "your-environment-name"
-        region: "your-aws-region"
+        application_name: "hue-manager"
+        environment_name: "hue-manager-env"
+        region: "ap-northeast-2"
         version_label: $GITHUB_SHA
         image_url: ${{ secrets.DOCKER_USERNAME }}/my-app:$GITHUB_SHA
