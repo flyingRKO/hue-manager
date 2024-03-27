@@ -34,7 +34,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Set up application.properties
-        run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+        run: |
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
 
       - name: Build with Gradle
         run: ./gradlew build
