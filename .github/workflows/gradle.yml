@@ -49,5 +49,6 @@ jobs:
         script: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/hue:latest
           docker stop $(docker ps -q) || true
-          docker run -d --log-driver=syslog -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/hue:latest
-          docker system prune -af
+          docker rm $(docker ps -aq) || true
+          CONTAINER_ID=$(docker run -d --log-driver=syslog -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/hue:latest)
+          echo "New container started with ID $CONTAINER_ID"
