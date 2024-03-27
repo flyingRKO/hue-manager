@@ -71,5 +71,10 @@ jobs:
               sudo docker rm $CONTAINER_ID
             fi
             
+            if [ $(sudo docker ps -aq -f name=hue-container) ]; then
+              sudo docker stop hue-container
+              sudo docker rm hue-container
+            fi
+            
             sudo docker pull ${{ env.DOCKER_IMAGE_NAME }}:latest
             sudo docker run -d --name hue-container -p 80:8080 -e TZ=Asia/Seoul ${{ env.DOCKER_IMAGE_NAME }}:latest
