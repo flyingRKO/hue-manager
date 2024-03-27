@@ -5,7 +5,7 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: Deploy Java Application to AWS Elastic Beanstalk
 
 on:
   push:
@@ -14,41 +14,42 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: chmod +x ./gradlew && ./gradlew build -x test
 
-    - name: Build with Gradle Wrapper
-      run: ./gradlew build -x test
-    
-    - name: Docker build and push
+    - name: Build Docker image
       run: |
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -t app .
-        docker tag app ${{ secrets.DOCKER_USERNAME }}/hue:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/hue:latest
+        docker build -t my-app:$GITHUB_SHA .
+        docker tag my-app:$GITHUB_SHA ${{ secrets.DOCKER_USERNAME }}/my-app:$GITHUB_SHA
 
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@master
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Push Docker image to Docker Hub
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/my-app:$GITHUB_SHA
+
+    - name: Deploy to Elastic Beanstalk
+      uses: einaregilsson/beanstalk-deploy@v18
       with:
-        host: ${{ secrets.HOST }}
-        username: ec2-user
-        key: ${{ secrets.PRIVATE_KEY }}
-        script: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/hue:latest
-          docker stop $(docker ps -q) || true
-          docker rm $(docker ps -aq) || true
-          CONTAINER_ID=$(docker run -d --log-driver=syslog -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/hue:latest)
-          echo "New container started with ID $CONTAINER_ID"
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: "your-application-name"
+        environment_name: "your-environment-name"
+        region: "your-aws-region"
+        version_label: $GITHUB_SHA
+        image_url: ${{ secrets.DOCKER_USERNAME }}/my-app:$GITHUB_SHA
