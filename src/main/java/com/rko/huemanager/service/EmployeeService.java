@@ -80,15 +80,16 @@ public class EmployeeService implements UserDetailsService {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new HueManagerException(ErrorCode.EMPLOYEE_NOT_FOUND, String.format("employeeId is %s", employeeId)));
 
-        if (!request.email().equals(employee.getEmail())) {
-            employeeRepository.findByEmail(request.email()).ifPresent(existingEmployee -> {
-                if (!existingEmployee.getId().equals(employee.getId())) {
-                    throw new HueManagerException(ErrorCode.DUPLICATED_EMAIL, String.format("email is %s", request.email()));
-                }
-            });
-            employee.setEmail(request.email());
-
+        if (request.email().equals(employee.getEmail())) {
+            throw new HueManagerException(ErrorCode.EMAIL_UNCHANGED, String.format("The new email is the same as the current email: %s", request.email()));
         }
+
+        employeeRepository.findByEmail(request.email()).ifPresent(existingEmployee -> {
+            if (!existingEmployee.getId().equals(employee.getId())) {
+                throw new HueManagerException(ErrorCode.DUPLICATED_EMAIL, String.format("email is %s", request.email()));
+            }
+        });
+        employee.setEmail(request.email());
     }
 
     @Transactional
