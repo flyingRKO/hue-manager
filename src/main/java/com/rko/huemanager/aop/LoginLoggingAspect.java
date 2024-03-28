@@ -8,7 +8,6 @@ import com.rko.huemanager.repository.EmployeeRepository;
 import com.rko.huemanager.service.LoginLogService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +29,7 @@ public class LoginLoggingAspect {
     private String secretKey;
 
     @AfterReturning(value = "@annotation(Loggable)", returning = "token")
-    public void logLogin(JoinPoint joinPoint, String token){
+    public void logLogin(String token){
         if (token != null && !JwtTokenUtils.isTokenExpired(token, secretKey)){
             String email = JwtTokenUtils.getUsername(token, secretKey);
             HttpServletRequest request =
