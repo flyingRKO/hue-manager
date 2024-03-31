@@ -15,6 +15,12 @@ public record ScheduleSearchRequest(
         @Schema(description = "일정 유형", example = "LEAVE")
         ScheduleType type,
         @Schema(description = "일정 상태", example = "PENDING")
-        ScheduleStatus status
+        ScheduleStatus status,
+        @Schema(description = "사원의 이름")
+        String name,
+        @Schema(description = "사원의 직책")
+        String position,
+        @Schema(description = "사원의 부서")
+        String department
 ) {
 }

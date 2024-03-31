@@ -6,7 +6,6 @@ import com.rko.huemanager.domain.constant.ScheduleStatus;
 import com.rko.huemanager.domain.constant.ScheduleType;
 import com.rko.huemanager.dto.ScheduleDto;
 import com.rko.huemanager.dto.request.ScheduleRequest;
-import com.rko.huemanager.dto.request.ScheduleSearchRequest;
 import com.rko.huemanager.exception.ErrorCode;
 import com.rko.huemanager.exception.HueManagerException;
 import com.rko.huemanager.repository.EmployeeRepository;
@@ -63,23 +62,19 @@ public class ScheduleService {
 
     @Transactional(readOnly = true)
     public Page<ScheduleDto> getDaySchedules(LocalDate date, Pageable pageable){
-        Page<Schedule> schedules = scheduleRepository.findByStartDateBetweenAndStatus(date, date, ScheduleStatus.APPROVED, pageable);
+        Page<Schedule> schedules = scheduleRepository.findDailySchedules(date, pageable);
         return schedules.map(ScheduleDto::from);
     }
 
     @Transactional(readOnly = true)
     public Page<ScheduleDto> getWeekSchedules(LocalDate date, Pageable pageable){
-        LocalDate startDate = date.with(previousOrSame(DayOfWeek.MONDAY));
-        LocalDate endDate = date.with(nextOrSame(DayOfWeek.SUNDAY));
-        Page<Schedule> schedules = scheduleRepository.findByStartDateBetweenAndStatus(startDate, endDate, ScheduleStatus.APPROVED, pageable);
+        Page<Schedule> schedules = scheduleRepository.findWeeklySchedules(date, pageable);
         return schedules.map(ScheduleDto::from);
     }
 
     @Transactional(readOnly = true)
     public Page<ScheduleDto> getMonthSchedules(LocalDate date, Pageable pageable){
-        LocalDate startDate = date.with(firstDayOfMonth());
-        LocalDate endDate = date.with(lastDayOfMonth());
-        Page<Schedule> schedules = scheduleRepository.findByStartDateBetweenAndStatus(startDate, endDate, ScheduleStatus.APPROVED, pageable);
+        Page<Schedule> schedules = scheduleRepository.findMonthlySchedules(date, pageable);
         return schedules.map(ScheduleDto::from);
     }
 

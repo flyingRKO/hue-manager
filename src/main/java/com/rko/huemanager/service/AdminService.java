@@ -29,6 +29,9 @@ public class AdminService {
                 request.endDate(),
                 request.type(),
                 request.status(),
+                request.name(),
+                request.position(),
+                request.department(),
                 pageable);
 
         return schedules.map(ScheduleDto::from);

@@ -3,7 +3,6 @@ package com.rko.huemanager.controller;
 import com.rko.huemanager.domain.Employee;
 import com.rko.huemanager.dto.ScheduleDto;
 import com.rko.huemanager.dto.request.ScheduleRequest;
-import com.rko.huemanager.dto.request.ScheduleSearchRequest;
 import com.rko.huemanager.dto.response.Response;
 import com.rko.huemanager.service.ScheduleService;
 import jakarta.validation.Valid;

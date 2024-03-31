@@ -11,5 +11,10 @@ import java.time.LocalDate;
 public interface ScheduleCustomRepository {
     Page<Schedule> findByEmployeeId(Long employeeId, Pageable pageable);
 
-    Page<Schedule> findSearchSchedules(LocalDate startDate, LocalDate endDate, ScheduleType type, ScheduleStatus status, Pageable pageable);
+    Page<Schedule> findSearchSchedules(LocalDate startDate, LocalDate endDate, ScheduleType type, ScheduleStatus status, String name, String position, String department, Pageable pageable);
+
+    Page<Schedule> findDailySchedules(LocalDate date, Pageable pageable);
+    Page<Schedule> findWeeklySchedules(LocalDate date, Pageable pageable);
+    Page<Schedule> findMonthlySchedules(LocalDate date, Pageable pageable);
+
 }
