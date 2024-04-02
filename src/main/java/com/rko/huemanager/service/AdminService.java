@@ -24,7 +24,7 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public Page<ScheduleDto> searchSchedules(ScheduleSearchRequest request, Pageable pageable){
-        Page<Schedule> schedules = scheduleRepository.findSearchSchedules(
+        Page<Schedule> schedules = scheduleRepository.searchSchedules(
                 request.startDate(),
                 request.endDate(),
                 request.type(),

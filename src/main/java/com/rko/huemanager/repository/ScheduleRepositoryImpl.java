@@ -27,7 +27,7 @@ public class ScheduleRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public Page<Schedule> findSearchSchedules(LocalDate startDate, LocalDate endDate, ScheduleType type, ScheduleStatus status, String name, String position, String department, Pageable pageable) {
+    public Page<Schedule> searchSchedules(LocalDate startDate, LocalDate endDate, ScheduleType type, ScheduleStatus status, String name, String position, String department, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
         if (startDate != null && endDate == null) { builder.and(schedule.endDate.goe(startDate)); }
         else if (startDate == null && endDate != null) { builder.and(schedule.startDate.loe(endDate)); }
