@@ -29,11 +29,12 @@ swagger 또한 확인 가능합니다.
 # 기술 스택
 
 - `spring boot mvc`
+- `jwt`
 - `spring security`
 - `spring data jpa`
-- `jwt`
 - `querydsl`
 - `mysql`
+- `postman`
 - `github action`
 - `docker` `docker hub`
 - `AWS` - `EC2` `RDS`
