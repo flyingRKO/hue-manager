@@ -21,22 +21,22 @@ swagger 또한 확인 가능합니다.
 
 # 개발 환경
 
-- `intellij`
+- `Intellij`
 - `Gradle`
 - `Java 17`
-- `git/github`
+- `Git/Github`
 
 # 기술 스택
 
-- `spring boot mvc`
-- `jwt`
-- `spring security`
-- `spring data jpa`
-- `querydsl`
-- `mysql`
-- `postman`
-- `github action`
-- `docker` `docker hub`
+- `Spring Boot MVC`
+- `JWT`
+- `Spring Security`
+- `Spring Data JPA`
+- `QueryDSL`
+- `MySQL`
+- `Postman`
+- `Github Action`
+- `Docker` `Docker Hub`
 - `AWS` - `EC2` `RDS`
 
 # 시스템 아키텍처
