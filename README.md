@@ -18,6 +18,16 @@ swagger 또한 확인 가능합니다.
 
 
 
+# 어플리케이션 아키텍처
+
+
+
+![어플리케이션 아키텍처](images/hue1.png)
+
+# Erd
+
+![ERD](images/hueERD.png)
+
 
 # 개발 환경
 
@@ -38,18 +48,6 @@ swagger 또한 확인 가능합니다.
 - `Github Action`
 - `Docker` `Docker Hub`
 - `AWS` - `EC2` `RDS`
-
-# 어플리케이션 아키텍처
-
-
-
-![어플리케이션 아키텍처](images/hue1.png)
-
-# Erd
-
-
-
-![ERD](images/hueERD.png)
 
 # 주요 기능
 
