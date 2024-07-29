@@ -1,4 +1,4 @@
-# hue-manager
+# 🏖️hue-manager
 
 
 
