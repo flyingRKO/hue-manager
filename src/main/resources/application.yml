@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: hue-manager
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/erp
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: false
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL8Dialect
+      show-sql: true
+      format-sql: true
+      properties:
+        hibernate:
+          default_batch_fetch_size: 100
+
+  sql:
+    init:
+      mode: always
+
+jwt:
+  token:
+    secret: YourSuperSecretKeyWhichIsVeryLongAndSecure
+    expired: 86400000
+
+springdoc:
+  swagger-ui:
+    groups-order: DESC
+    tags-sorter: alpha
+    operations-sorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+    default-models-expand-depth: 2
+    default-model-expand-depth: 2
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  writer-with-default-pretty-printer: true
+  model-and-view-allowed: true
+  paths-to-match: /api/**
