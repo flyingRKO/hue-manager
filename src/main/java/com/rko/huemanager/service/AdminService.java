@@ -46,10 +46,15 @@ public class AdminService {
 
         schedule.setStatus(newStatus);
 
-        if (newStatus == ScheduleStatus.REJECTED && schedule.getType() == ScheduleType.LEAVE){
+        if (newStatus == ScheduleStatus.REJECTED) {
             Employee employee = schedule.getEmployee();
-            int days = Period.between(schedule.getStartDate(), schedule.getEndDate()).getDays() + 1;
-            employee.setVacationCount(employee.getVacationCount() + days);
+
+            if (schedule.getType() == ScheduleType.LEAVE) {
+                int days = Period.between(schedule.getStartDate(), schedule.getEndDate()).getDays() + 1;
+                employee.setVacationCount(employee.getVacationCount() + days);
+            } else if (schedule.getType() == ScheduleType.HALF_DAY_LEAVE) {
+                employee.setVacationCount(employee.getVacationCount() + 0.5);
+            }
         }
 
     }

@@ -43,7 +43,7 @@ public class Employee implements UserDetails {
     private Role role;
 
     @Setter
-    private Integer vacationCount = 15;
+    private Double vacationCount = 15.0;
 
     @Column(nullable = false)
     @Setter

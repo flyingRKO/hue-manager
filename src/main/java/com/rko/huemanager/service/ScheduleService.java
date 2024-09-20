@@ -37,9 +37,15 @@ public class ScheduleService {
         LocalDate startDate = request.startDate();
         LocalDate endDate = (request.type() == ScheduleType.NIGHT_SHIFT) ? startDate : request.endDate();
 
-        int dayOff = Period.between(startDate, endDate).getDays() + 1;
+        double dayOff = 0;
 
-        if (request.type() == ScheduleType.LEAVE){
+        if (request.type() == ScheduleType.LEAVE) {
+            dayOff = Period.between(startDate, endDate).getDays() + 1;
+        } else if (request.type() == ScheduleType.HALF_DAY_LEAVE) {
+            dayOff = 0.5;
+        }
+
+        if (request.type() == ScheduleType.LEAVE || request.type() == ScheduleType.HALF_DAY_LEAVE) {
             if (employee.getVacationCount() < dayOff){
                 throw new HueManagerException(ErrorCode.NOT_ENOUGH_DAYS);
             }
