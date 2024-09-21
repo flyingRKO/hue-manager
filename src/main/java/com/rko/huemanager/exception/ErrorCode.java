@@ -19,9 +19,12 @@ public enum ErrorCode {
     NOT_AN_EMPLOYEE(HttpStatus.FORBIDDEN, "직원이 아닙니다."),
     NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "관리자 권한이 없습니다."),
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다." ),
-    UNAUTHORIZED_SCHEDULE(HttpStatus.CONFLICT, "일정 수정/삭제는 당사자만 가능합니다."),
+    UNAUTHORIZED_ACCESS(HttpStatus.CONFLICT, "당사자만 가능합니다."),
     SCHEDULE_NOT_PENDING(HttpStatus.CONFLICT, "일정 변경은 상태가 보류 중일 때 가능합니다."),
-    BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.");
+    BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."),
+    MEETING_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "등록된 회의실 사용 신청 이력이 없습니다."),
+    MEETING_ROOM_ALREADY_BOOKED(HttpStatus.CONFLICT, "해당 날짜, 시간은 이미 예약된 회의실입니다."),
+    INVALID_STATUS(HttpStatus.BAD_REQUEST, "회의실 예약은 PENDING 상태일 때만 수정 가능합니다."),;
 
     private final HttpStatus status;
     private final String message;

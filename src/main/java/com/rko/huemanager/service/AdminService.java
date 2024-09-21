@@ -1,13 +1,16 @@
 package com.rko.huemanager.service;
 
 import com.rko.huemanager.domain.Employee;
+import com.rko.huemanager.domain.MeetingRoom;
 import com.rko.huemanager.domain.Schedule;
 import com.rko.huemanager.domain.constant.ScheduleStatus;
 import com.rko.huemanager.domain.constant.ScheduleType;
 import com.rko.huemanager.dto.ScheduleDto;
 import com.rko.huemanager.dto.request.ScheduleSearchRequest;
+import com.rko.huemanager.dto.response.MeetingRoomDto;
 import com.rko.huemanager.exception.ErrorCode;
 import com.rko.huemanager.exception.HueManagerException;
+import com.rko.huemanager.repository.MeetingRoomRepository;
 import com.rko.huemanager.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +24,7 @@ import java.time.Period;
 @RequiredArgsConstructor
 public class AdminService {
     private final ScheduleRepository scheduleRepository;
+    private final MeetingRoomRepository meetingRoomRepository;
 
     @Transactional(readOnly = true)
     public Page<ScheduleDto> searchSchedules(ScheduleSearchRequest request, Pageable pageable){
@@ -62,5 +66,24 @@ public class AdminService {
     private Schedule findScheduleById(Long scheduleId) {
         return scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new HueManagerException(ErrorCode.SCHEDULE_NOT_FOUND, String.format("scheduleId is %s", scheduleId)));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MeetingRoomDto> getMeetingRoomsByStatus(ScheduleStatus status, Pageable pageable){
+        Page<MeetingRoom> meetingRooms;
+        if (status != null){
+            meetingRooms = meetingRoomRepository.findAllByStatus(status, pageable);
+        } else {
+            meetingRooms = meetingRoomRepository.findAll(pageable);
+        }
+        return meetingRooms.map(MeetingRoomDto::from);
+    }
+
+    @Transactional
+    public void updateMeetingRoomStatus(Long meetingRoomId, ScheduleStatus status){
+        MeetingRoom meetingRoom = meetingRoomRepository.findById(meetingRoomId)
+                .orElseThrow(() -> new HueManagerException(ErrorCode.MEETING_ROOM_NOT_FOUND, String.format("meetingRoomId is %s", meetingRoomId)));
+
+        meetingRoom.setStatus(status);
     }
 }

@@ -16,12 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
-
-import static java.time.temporal.TemporalAdjusters.*;
 
 @Service
 @RequiredArgsConstructor
@@ -140,7 +137,7 @@ public class ScheduleService {
             throw new HueManagerException(ErrorCode.SCHEDULE_NOT_PENDING);
         }
         if (!schedule.getEmployee().getId().equals(employee.getId())){
-            throw new HueManagerException(ErrorCode.UNAUTHORIZED_SCHEDULE);
+            throw new HueManagerException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
     }
 }
